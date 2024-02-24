@@ -1,7 +1,20 @@
 #include "Arduino.h"
+#include <Wire.h>
 #include "DFRobotDFPlayerMini.h"
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
+
+#define SCREEN_WIDTH 128
+#define SCREEN_HEIGHT 64
 #define FPSerial Serial1
 DFRobotDFPlayerMini myDFPlayer;
+
+// Define I2C address
+#define OLED_ADDRESS 0x3C
+#define SCREEN_WIDTH 128
+#define SCREEN_HEIGHT 64
+
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_ADDRESS);
 
 const int button1 = 28;
 const int button2 = 29;
@@ -16,6 +29,7 @@ const int button9 = 24;
 void setup() {
   FPSerial.begin(9600);
   Serial.begin(115200);
+
   pinMode(button1, INPUT_PULLUP);
   pinMode(button2, INPUT_PULLUP);
   pinMode(button3, INPUT_PULLUP);
@@ -25,9 +39,6 @@ void setup() {
   pinMode(button7, INPUT_PULLUP);
   pinMode(button8, INPUT_PULLUP);
   pinMode(button9, INPUT_PULLUP);
-
-
-
 
   Serial.println();
   Serial.println(F("DFRobot DFPlayer Mini Demo"));
@@ -43,6 +54,19 @@ void setup() {
   }
   Serial.println(F("DFPlayer Mini online."));
   myDFPlayer.volume(30);  //Set volume value. From 0 to 30
+
+  if(!display.begin(SSD1306_SWITCHCAPVCC, OLED_ADDRESS)) {
+    Serial.println(F("SSD1306 allocation failed"));
+    for(;;);
+  }
+
+  display.clearDisplay();
+  display.setTextColor(1);
+  display.setTextSize(2);
+  display.setCursor(0, 10);
+  display.println("Test");
+  display.display();
+
 }
 
 void loop() {
