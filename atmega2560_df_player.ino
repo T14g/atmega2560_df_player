@@ -64,9 +64,18 @@ void setup() {
   display.setTextColor(1);
   display.setTextSize(2);
   display.setCursor(0, 10);
-  display.println("Test");
+  display.println("GuitarINO");
   display.display();
 
+}
+
+void displayMessage(const char* msg) {
+  display.clearDisplay();
+  display.setTextColor(1);
+  display.setTextSize(2);
+  display.setCursor(0, 10);
+  display.println(msg);
+  display.display();
 }
 
 void loop() {
@@ -87,6 +96,7 @@ void loop() {
     myDFPlayer.enableLoop();
     delay(500);
     myDFPlayer.play(1); 
+    displayMessage("Track 1");
     
   }
 
@@ -97,6 +107,7 @@ void loop() {
     myDFPlayer.enableLoop();
     delay(500);
     myDFPlayer.play(2); 
+    displayMessage("Track 2");
   }
 
   if (button3State == LOW) {
@@ -105,7 +116,8 @@ void loop() {
     delay(200);
     myDFPlayer.enableLoop();
     delay(500);
-    myDFPlayer.play(3); 
+    myDFPlayer.play(3);
+    displayMessage("Track 3");
   }
 
   if (button4State == LOW) {
@@ -113,6 +125,7 @@ void loop() {
     myDFPlayer.stop();
     delay(500);
     myDFPlayer.play(4); 
+    displayMessage("Track 4");
   }
   
   if (button5State == LOW) {
@@ -120,23 +133,30 @@ void loop() {
     myDFPlayer.stop();
     delay(500);
     myDFPlayer.play(5); 
+    displayMessage("Track 5");
   }
   
   if (button6State == LOW) {
      Serial.println("btn6");
+     displayMessage("Track 6");
   }
 
   if (button7State == LOW) {
      Serial.println("btn7");
+     displayMessage("Track 7");
   }
 
   if (button8State == LOW) {
      Serial.println("btn8");
+     displayMessage("Track 8");
   }
 
   if (button9State == LOW) {
      Serial.println("btn9");
+     displayMessage("STOP");
      myDFPlayer.stop();
+     delay(1000);
+     displayMessage("GuitarINO");
   }
 
   delay(200);
