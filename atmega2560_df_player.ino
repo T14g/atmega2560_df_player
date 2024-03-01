@@ -25,6 +25,11 @@ const int button6 = 27;
 const int button7 = 22;
 const int button8 = 23;
 const int button9 = 24;
+const int potPin = A7;
+int lastValue = 0;     // Variable to store the last stable value
+int threshold = 5;     // Threshold to ignore small changes
+int volume = 0;
+
 
 void setup() {
   FPSerial.begin(9600);
@@ -53,28 +58,34 @@ void setup() {
     }
   }
   Serial.println(F("DFPlayer Mini online."));
-  myDFPlayer.volume(30);  //Set volume value. From 0 to 30
+  myDFPlayer.volume(volume);  //Set volume value. From 0 to 30
 
   if(!display.begin(SSD1306_SWITCHCAPVCC, OLED_ADDRESS)) {
     Serial.println(F("SSD1306 allocation failed"));
     for(;;);
   }
 
-  display.clearDisplay();
-  display.setTextColor(1);
-  display.setTextSize(2);
-  display.setCursor(0, 10);
-  display.println("GuitarINO");
-  display.display();
-
+  displayVolume(volume);
 }
-
 void displayMessage(const char* msg) {
   display.clearDisplay();
   display.setTextColor(1);
   display.setTextSize(2);
   display.setCursor(0, 10);
   display.println(msg);
+  display.display();
+  delay(500);
+  displayVolume(volume);
+}
+
+void displayVolume(const int val) {
+  display.clearDisplay();
+  display.setTextColor(1);
+  display.setTextSize(2);
+  display.setCursor(0, 10);
+  display.println("GuitarINO");
+  display.setCursor(0, 45);
+  display.println("Volume: " + String(val));
   display.display();
 }
 
@@ -97,7 +108,6 @@ void loop() {
     delay(500);
     myDFPlayer.play(1); 
     displayMessage("Track 1");
-    
   }
 
   if (button2State == LOW) {
@@ -159,5 +169,23 @@ void loop() {
      displayMessage("GuitarINO");
   }
 
+  int potValue = analogRead(potPin); // Read the analog value from the potentiometer
+  int diff = abs(potValue - lastValue );  // Calculate the difference
+  
+  // Check if the difference is greater than the threshold
+  if (diff >= threshold) {
+    
+    // Update the last stable value if the change is significant
+    lastValue = potValue;
+    
+    // Map the potentiometer values to the range 1 to 30
+    int mappedValue = map(potValue, 0, 1023, 0, 30);
+    
+    volume = mappedValue;
+
+    myDFPlayer.volume(volume);  //Set volume value. From 0 to 30
+    displayVolume(volume);
+    delay(100); 
+  }
   delay(200);
 }
